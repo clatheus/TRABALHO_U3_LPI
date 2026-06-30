@@ -2,20 +2,20 @@
 using namespace std;
 
 Trajeto::Trajeto(Cidade* origem, Cidade* destino, char tipo, int distancia)
-    : localOrigem(origem), localDestino(destino), modalTipo(tipo), quilometragem(distancia) {}
+    : Origem(origem), Destino(destino), Tipo(tipo), Distancia(distancia) {}
 
 Cidade* Trajeto::getOrigem() const { 
-    return localOrigem; 
+    return Origem; 
 }
 
 Cidade* Trajeto::getDestino() const { 
-    return localDestino; 
+    return Destino; 
 }
 
 char Trajeto::getTipo() const { 
-    return modalTipo; 
+    return Tipo; 
 }
 
 int Trajeto::getDistancia() const { 
-    return quilometragem; 
+    return Distancia; 
 }

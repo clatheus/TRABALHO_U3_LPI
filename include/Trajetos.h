@@ -5,10 +5,10 @@ using namespace std;
 
 class Trajeto {
 private:
-    Cidade* localOrigem;
-    Cidade* localDestino;
-    char modalTipo;
-    int quilometragem;
+    Cidade* Origem;
+    Cidade* Destino;
+    char Tipo;
+    int Distancia;
 
 public:
     Trajeto(Cidade* origem, Cidade* destino, char tipo, int distancia);

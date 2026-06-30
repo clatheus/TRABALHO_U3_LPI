@@ -23,7 +23,8 @@ Cidade* GerenciadorCaminhos::acharCidadePeloNome(const string& nomeAlvo) const {
 
 void GerenciadorCaminhos::cadastrarCidade(const string& nome) {
     if (acharCidadePeloNome(nome) != nullptr) {
-        cout << "[AVISO] Ignorado: '" << nome << "' ja possui cadastro ativo.\n";
+        cout << "------- AVISO -------\n";
+        cout << "Ignorado: '" << nome << "' ja possui cadastro ativo.\n";
         return;
     }
     cadastroCidades.push_back(new Cidade(nome));
@@ -33,7 +34,8 @@ void GerenciadorCaminhos::cadastrarTrajeto(const string& nomeOrigem, const strin
     Cidade* destinoPt = acharCidadePeloNome(nomeDestino);
 
     if (origemPt == nullptr || destinoPt == nullptr) {
-        cout << "[ERRO] Inpossivel linkar trajeto: Origem ou Destino inexistentes.\n";
+        cout << ------- ERRO -------
+        cout << "Não é possível linkar o trajeto: Origem ou Destino não existem.\n";
         return;
     }
     rotasDisponiveis.push_back(new Trajeto(origemPt, destinoPt, tipo, distancia));
