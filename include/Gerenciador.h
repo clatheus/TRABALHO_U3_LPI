@@ -4,27 +4,33 @@
 #include <string>
 #include "Cidades.h"
 #include "Trajetos.h"
-using namespace std;
+#include "Passageiros.h"
 
 class GerenciadorCaminhos {
 protected:
-    vector<Cidade*> cadastroCidades;
-    vector<Trajeto*> rotasDisponiveis;
+    std::vector<Cidade*> cadastroCidades;
+    std::vector<Trajeto*> rotasDisponiveis;
+    std::vector<Passageiro*> passageirosCadastrados;
 
-    Cidade* acharCidadePeloNome(const string& nomeAlvo) const;
+    Cidade* acharCidadePeloNome(const std::string& nomeAlvo) const;
 
 public:
     virtual ~GerenciadorCaminhos();
 
-    void cadastrarCidade(const string& nome);
-    void cadastrarTrajeto(const string& nomeOrigem, const string& nomeDestino, char tipo, int distancia);
-    
-    bool existeTrajetoDireto(const string& nomeOrigem, const string& nomeDestino) const;
-    
-    vector<Trajeto*> buscarMelhorCaminho(const string& nomeOrigem, const string& nomeDestino) const;
+    void cadastrarCidade(const std::string& nome);
+    void cadastrarTrajeto(const std::string& nomeOrigem, const std::string& nomeDestino, char tipo, int distancia);
 
-    const vector<Cidade*>& getCidades() const;
-    const vector<Trajeto*>& getTrajetos() const;
+    void cadastrarPassageiro(std::string nome, std::string cpf, Cidade* localAtual);
+    Passageiro* procuraPassageiro(std::string cpf);
+    
+    bool existeTrajetoDireto(const std::string& nomeOrigem, const std::string& nomeDestino) const;
+    
+    
+    std::vector<Trajeto*> buscarMelhorCaminho(const std::string& nomeOrigem, const std::string& nomeDestino) const;
+
+    const std::vector<Cidade*>& getCidades() const;
+    const std::vector<Trajeto*>& getTrajetos() const;
+    const std::vector<Passageiro*>& getPassageiros() const;
 };
 
 #endif
