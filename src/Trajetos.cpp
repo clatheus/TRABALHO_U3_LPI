@@ -1,4 +1,4 @@
-#include "Trajeto.h"
+#include "Trajetos.h"
 using namespace std;
 
 Trajeto::Trajeto(Cidade* origem, Cidade* destino, char tipo, int distancia)

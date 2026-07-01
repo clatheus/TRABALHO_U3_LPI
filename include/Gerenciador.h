@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include "Cidades.h"
-#include "Trajeto.h"
+#include "Trajetos.h"
 using namespace std;
 
 class GerenciadorCaminhos {

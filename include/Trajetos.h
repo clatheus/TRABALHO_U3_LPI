@@ -1,6 +1,6 @@
 #ifndef TRAJETOS_H
 #define TRAJETOS_H
-#include "Cidade.h"
+#include "Cidades.h"
 using namespace std;
 
 class Trajeto {
