@@ -7,11 +7,13 @@
 class Passageiro {
 private:
     std::string nome;
+    std::string cpf;
     Cidade* localAtual;
 public:
-    Passageiro(std::string nome, Cidade* localAtual);
-    std::string getNome();
-    Cidade* getLocalAtual();
+    Passageiro(std::string nomePassageiro, std::string cpfPassageiro, Cidade* localAtualPassageiro);
+    std::string getNome() const;
+    std::string getCpf() const;
+    Cidade* getLocalAtual() const;
     void setLocalAtual(Cidade* local);
 };
 

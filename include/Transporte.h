@@ -10,7 +10,7 @@ private:
     std::string nome;
     char tipo;                         //'A' para aquatico e 'T' para Terrestre
     int capacidade;                    //capacidade maxima
-    int velocidade                    
+    int velocidade;                    
     int distancia_entre_descansos;
     int tempo_de_descanso;
 

@@ -12,6 +12,9 @@ GerenciadorCaminhos::~GerenciadorCaminhos() {
     for (size_t i = 0; i < rotasDisponiveis.size(); ++i) {
         delete rotasDisponiveis[i];
     }
+     for (size_t i = 0; i < passageirosCadastrados.size(); ++i) {
+        delete passageirosCadastrados[i];
+    }
 }
 
 Cidade* GerenciadorCaminhos::acharCidadePeloNome(const string& nomeAlvo) const {
@@ -32,9 +35,10 @@ void GerenciadorCaminhos::cadastrarCidade(const string& nome) {
 
 void GerenciadorCaminhos::cadastrarTrajeto(const string& nomeOrigem, const string& nomeDestino, char tipo, int distancia) {
     Cidade* destinoPt = acharCidadePeloNome(nomeDestino);
+    Cidade* origemPt = acharCidadePeloNome(nomeOrigem);
 
     if (origemPt == nullptr || destinoPt == nullptr) {
-        cout << ------- ERRO -------
+        cout << "------- ERRO -------";
         cout << "Não é possível linkar o trajeto: Origem ou Destino não existem.\n";
         return;
     }
@@ -115,6 +119,22 @@ vector<Trajeto*> GerenciadorCaminhos::buscarMelhorCaminho(const string& nomeOrig
     return rotaFinal;
 }
 
+Passageiro* GerenciadorCaminhos::procuraPassageiro(std::string cpf){
+    for (Passageiro* p : passageirosCadastrados) { //procura passageiro pelo cpf
+        if (p->getCpf() == cpf){
+            return p;
+        }
+    }
+    return nullptr;
+}
+
+void GerenciadorCaminhos::cadastrarPassageiro(std::string nome,  std::string cpf, Cidade* localAtual){
+    if(procuraPassageiro(cpf) == nullptr){
+        passageirosCadastrados.push_back(new Passageiro(nome,cpf, localAtual));
+    }
+        return;
+}
+
 const vector<Cidade*>& GerenciadorCaminhos::getCidades() const { 
     return cadastroCidades; 
 }
@@ -122,3 +142,8 @@ const vector<Cidade*>& GerenciadorCaminhos::getCidades() const {
 const vector<Trajeto*>& GerenciadorCaminhos::getTrajetos() const { 
     return rotasDisponiveis; 
 }
+
+const std::vector<Passageiro*>& GerenciadorCaminhos::getPassageiros() const{
+    return passageirosCadastrados;
+}
+
