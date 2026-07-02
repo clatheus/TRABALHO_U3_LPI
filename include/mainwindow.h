@@ -52,6 +52,10 @@ private slots:
 
     void on_pushButton_17_clicked();
 
+    void on_pushButton_11_clicked();
+
+    void on_pushButton_21_clicked();
+
 private:
     Ui::MainWindow *ui;
     GerenciadorCaminhos gerenciador;

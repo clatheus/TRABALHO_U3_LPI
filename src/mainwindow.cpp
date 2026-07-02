@@ -122,14 +122,39 @@ void MainWindow::on_pushButton_19_clicked()//boato mneu consultar viagens em and
 {
     ui->stackedWidget_6->setCurrentIndex(2);
 }
+void MainWindow::on_pushButton_21_clicked() //botão de voltar
+{
+        //verifica se estamos em alguma subtela de cidades
+        if (ui->stackedWidget_2->currentIndex() > 0) {
+            ui->stackedWidget_2->setCurrentIndex(ui->stackedWidget_2->currentIndex() - 1);
+        }
+        //verifica se estamos em alguma subtela de trajetos
+        else if (ui->stackedWidget_3->currentIndex() > 0) {
+            ui->stackedWidget_3->setCurrentIndex(ui->stackedWidget_3->currentIndex() - 1);
+        }
+        //verifica se estamos em alguma subtela de transportes
+        else if (ui->stackedWidget_4->currentIndex() > 0) {
+            ui->stackedWidget_4->setCurrentIndex(ui->stackedWidget_4->currentIndex() - 1);
+
+        }else if(ui->stackedWidget_5->currentIndex() > 0){ //passageiros
+            ui->stackedWidget_5->setCurrentIndex(ui->stackedWidget_5->currentIndex() - 1);
+
+        }else if(ui->stackedWidget_6->currentIndex() > 0){ //viagens
+            ui->stackedWidget_6->setCurrentIndex(ui->stackedWidget_6->currentIndex() - 1);
+}
+        // se não estiver em nenhuma subtela então volta para o menu principal
+        else {
+            ui->stackedWidget->setCurrentIndex(0);
+        }
+}
 
 //BOTOES CONFIRMACAO-------------------------------------------
 void MainWindow::on_pushButton_9_clicked()//cadstra cidade
 {
     //pega o texto dos campos da interface
-    QString nome = ui->lineEditNomeCidade->text();
+    std::string nome = ui->lineEditNomeCidade->text().toStdString();
 
-    bool sucesso = gerenciador.cadastrarCidade(nome.toStdString());
+    bool sucesso = gerenciador.cadastrarCidade(nome);
 
     //feedback para o usuário
     if (sucesso) {
@@ -157,4 +182,32 @@ void MainWindow::on_pushButton_17_clicked()//cadstra passageiro
     }
 
 }
+
+void MainWindow::on_pushButton_11_clicked() //cadastra trajeto
+{
+    std::string origem = ui->lineOrigemTrajeto->text().toStdString();
+    std::string destino = ui->lineDestinoTrajeto->text().toStdString();
+    int distancia = ui->lineDistanciaTrajeto->text().toInt();
+
+    char tipo;
+    if(ui->comboBox->currentText()=="Terrestre"){
+        tipo = 'T';
+    }else{
+        tipo = 'A';
+    }
+    bool sucesso = gerenciador.cadastrarTrajeto(origem, destino, tipo, distancia);
+
+
+    if (sucesso) {
+        QMessageBox::information(this, "Sucesso", "Trajeto cadastrado!");
+        ui->lineOrigemTrajeto->clear(); // limpa os campos
+        ui->lineDestinoTrajeto->clear();
+        ui->lineDistanciaTrajeto->clear();
+        ui->comboBox->clear();
+    } else {
+        QMessageBox::critical(this, "Erro", "Não é possível linkar o trajeto: Origem/Destino não existem ou Distância inválida.");
+    }
+}
+
+
 

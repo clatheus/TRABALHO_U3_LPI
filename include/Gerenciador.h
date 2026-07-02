@@ -18,7 +18,7 @@ public:
     virtual ~GerenciadorCaminhos();
 
     bool cadastrarCidade(const std::string& nome);
-    void cadastrarTrajeto(const std::string& nomeOrigem, const std::string& nomeDestino, char tipo, int distancia);
+    bool cadastrarTrajeto(const std::string& nomeOrigem, const std::string& nomeDestino, char tipo, int distancia);
 
     bool cadastrarPassageiro(std::string nome, std::string cpf);
     Passageiro* procuraPassageiro(std::string cpf);

@@ -34,16 +34,17 @@ bool GerenciadorCaminhos::cadastrarCidade(const string& nome) {
     return true;
 }
 
-void GerenciadorCaminhos::cadastrarTrajeto(const string& nomeOrigem, const string& nomeDestino, char tipo, int distancia) {
+bool GerenciadorCaminhos::cadastrarTrajeto(const string& nomeOrigem, const string& nomeDestino, char tipo, int distancia) {
     Cidade* destinoPt = acharCidadePeloNome(nomeDestino);
     Cidade* origemPt = acharCidadePeloNome(nomeOrigem);
 
-    if (origemPt == nullptr || destinoPt == nullptr) {
+    if (origemPt == nullptr || destinoPt == nullptr || distancia<=0) {
         cout << "------- ERRO -------";
         cout << "Não é possível linkar o trajeto: Origem ou Destino não existem.\n";
-        return;
+        return false;
     }
     rotasDisponiveis.push_back(new Trajeto(origemPt, destinoPt, tipo, distancia));
+    return true;
 }
 
 bool GerenciadorCaminhos::existeTrajetoDireto(const string& nomeOrigem, const string& nomeDestino) const {
