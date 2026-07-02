@@ -74,5 +74,6 @@ Cidade* Viagem::getDestino() const { return destino; }
 int Viagem::getHorasEmTransito() const { return horasEmTransito; }
 void Viagem::setHorasEmTransito(int horas) { horasEmTransito = horas; }
 void Viagem::setEmAndamento(bool status) { emAndamento = status; }
+void Viagem::setDistanciaPercorrida(bool status) { distanciaPercorrida = status;}
 int Viagem::getDistanciaPercorrida() const { return distanciaPercorrida; }
 int Viagem::getDistanciaTotal() const { return distanciaTotal; }

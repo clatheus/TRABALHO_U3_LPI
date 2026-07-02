@@ -1,4 +1,3 @@
-#include "ControladorDeTransito.h"
 #include "Gerenciador.h"
 #include <iostream>
 #include <fstream>
@@ -20,6 +19,9 @@ GerenciadorCaminhos::~GerenciadorCaminhos() {
     for (size_t i = 0; i < passageirosCadastrados.size(); ++i) {
         delete passageirosCadastrados[i];
     }
+
+    for (Transporte* t : transportes) delete t;
+    for (Viagem* v : viagens) delete v;
 }
 
 Cidade* GerenciadorCaminhos::acharCidadePeloNome(const string& nomeAlvo) const {
@@ -29,25 +31,27 @@ Cidade* GerenciadorCaminhos::acharCidadePeloNome(const string& nomeAlvo) const {
     return nullptr;
 }
 
-void GerenciadorCaminhos::cadastrarCidade(const string& nome) {
+bool GerenciadorCaminhos::cadastrarCidade(const string& nome) {
     if (acharCidadePeloNome(nome) != nullptr) {
         cout << "------- AVISO -------\n";
         cout << "Ignorado: '" << nome << "' ja possui cadastro ativo.\n";
-        return;
+        return false;
     }
     cadastroCidades.push_back(new Cidade(nome));
+    return true;
 }
 
-void GerenciadorCaminhos::cadastrarTrajeto(const string& nomeOrigem, const string& nomeDestino, char tipo, int distancia) {
+bool GerenciadorCaminhos::cadastrarTrajeto(const string& nomeOrigem, const string& nomeDestino, char tipo, int distancia) {
     Cidade* destinoPt = acharCidadePeloNome(nomeDestino);
     Cidade* origemPt = acharCidadePeloNome(nomeOrigem);
 
-    if (origemPt == nullptr || destinoPt == nullptr) {
-        cout << "------- ERRO -------\n";
-        cout << "Nao e possivel linkar o trajeto: Origem ou Destino nao existem.\n";
-        return;
+    if (origemPt == nullptr || destinoPt == nullptr || distancia<=0) {
+        cout << "------- ERRO -------";
+        cout << "Não é possível linkar o trajeto: Origem ou Destino não existem.\n";
+        return false;
     }
     rotasDisponiveis.push_back(new Trajeto(origemPt, destinoPt, tipo, distancia));
+    return true;
 }
 
 bool GerenciadorCaminhos::existeTrajetoDireto(const string& nomeOrigem, const string& nomeDestino) const {
@@ -86,7 +90,7 @@ vector<Trajeto*> GerenciadorCaminhos::buscarMelhorCaminho(const string& nomeOrig
             }
         }
 
-        if (menorAlvoIt == filaPendentes.end() || menorPesoEncontrado = = INT_MAX) {
+        if (menorAlvoIt == filaPendentes.end() || menorPesoEncontrado == INT_MAX) {
             break;
         }
 
@@ -122,7 +126,7 @@ vector<Trajeto*> GerenciadorCaminhos::buscarMelhorCaminho(const string& nomeOrig
 }
 
 Passageiro* GerenciadorCaminhos::procuraPassageiro(string cpf) {
-    for (Passageiro* p : passageirosCadastrados) {
+    for (Passageiro* p : passageirosCadastrados) { //procura passageiro pelo cpf
         if (p->getCpf() == cpf) {
             return p;
         }
@@ -130,10 +134,12 @@ Passageiro* GerenciadorCaminhos::procuraPassageiro(string cpf) {
     return nullptr;
 }
 
-void GerenciadorCaminhos::cadastrarPassageiro(string nome, string cpf, Cidade* localAtual) {
-    if (procuraPassageiro(cpf) == nullptr) {
-        passageirosCadastrados.push_back(new Passageiro(nome, cpf, localAtual));
+bool GerenciadorCaminhos::cadastrarPassageiro(std::string nome,  std::string cpf){
+    if(procuraPassageiro(cpf) == nullptr){
+        passageirosCadastrados.push_back(new Passageiro(nome,cpf, nullptr));
+        return true;
     }
+        return false;
 }
 
 const vector<Cidade*>& GerenciadorCaminhos::getCidades() const { 
@@ -148,24 +154,19 @@ const vector<Passageiro*>& GerenciadorCaminhos::getPassageiros() const {
     return passageirosCadastrados;
 }
 
-ControladorDeTransito::~ControladorDeTransito() {
-    for (Transporte* t : transportes) delete t;
-    for (Viagem* v : viagens) delete v;
-}
 
-void ControladorDeTransito::cadastrarTransporte(string nome, char tipo, int capacidade, int velocidade, int distDescanso, int tempoDescanso, string localAtual) {
+bool GerenciadorCaminhos::cadastrarTransporte(string nome, char tipo, int capacidade, int velocidade, int distDescanso, int tempoDescanso, string localAtual) {
     Cidade* cidade = acharCidadePeloNome(localAtual);
-    transportes.push_back(new Transporte(nome, tipo, capacidade, velocidade, distDescanso, tempoDescanso, cidade));
-}
-
-void ControladorDeTransito::cadastrarPassageiro(string nome, string localAtual) {
-    Cidade* cidade = acharCidadePeloNome(localAtual);
-    if (cidade) {
-        GerenciadorCaminhos::cadastrarPassageiro(nome, nome, cidade);
+    if(cidade != nullptr){
+        transportes.push_back(new Transporte(nome, tipo, capacidade, velocidade, distDescanso, tempoDescanso, cidade));
+        return true;
     }
+    return false;
+    
 }
 
-void ControladorDeTransito::iniciarViagem(string nomeTransporte, vector<string> nomesPassageiros, string nomeOrigem, string nomeDestino) {
+
+void GerenciadorCaminhos::iniciarViagem(string nomeTransporte, vector<string> nomesPassageiros, string nomeOrigem, string nomeDestino) {
     Transporte* t = nullptr;
     for (Transporte* trans : transportes) {
         if (trans->getNome() == nomeTransporte) { t = trans; break; }
@@ -221,7 +222,7 @@ void ControladorDeTransito::iniciarViagem(string nomeTransporte, vector<string> 
     }
 }
 
-void ControladorDeTransito::avancarHoras(int horas) {
+void GerenciadorCaminhos::avancarHoras(int horas) {
     for (int h = 0; h < horas; ++h) {
         set<Transporte*> transportesMovidosNestaHora;
         for (Viagem* v : viagens) {
@@ -237,7 +238,8 @@ void ControladorDeTransito::avancarHoras(int horas) {
     }
 }
 
-void ControladorDeTransito::relatarEstado() {
+//relatorios
+void GerenciadorCaminhos::relatarEstado() {
     cout << "\n------- RELATORIOS OBRIGATORIOS -------\n";
 
     cout << "\n[1] LOCALIZACAO DE CADA PASSAGEIRO:\n";
@@ -297,10 +299,11 @@ void ControladorDeTransito::relatarEstado() {
     cout << "---------------------------------------------\n\n";
 }
 
-const vector<Transporte*>& ControladorDeTransito::getTransportes() const { return transportes; }
-const vector<Viagem*>& ControladorDeTransito::getViagens() const { return viagens; }
+const vector<Transporte*>& GerenciadorCaminhos::getTransportes() const { return transportes; }
+const vector<Viagem*>& GerenciadorCaminhos::getViagens() const { return viagens; }
 
-void ControladorDeTransito::salvarDados(const string& prefixo) const {
+//SALVAR DADOS
+void GerenciadorCaminhos::salvarDados(const string& prefixo) const {
     ofstream fCidades(prefixo + "_cidades.csv");
     for (Cidade* c : cadastroCidades) fCidades << c->getNome() << "\n";
 
@@ -332,8 +335,8 @@ void ControladorDeTransito::salvarDados(const string& prefixo) const {
         fViagens << "\n";
     }
 }
-
-void ControladorDeTransito::carregarDados(const string& prefixo) {
+//CARREGAR DADOS
+void GerenciadorCaminhos::carregarDados(const string& prefixo) {
     string linha;
 
     ifstream fCidades(prefixo + "_cidades.csv");
