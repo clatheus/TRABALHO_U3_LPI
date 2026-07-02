@@ -17,10 +17,10 @@ protected:
 public:
     virtual ~GerenciadorCaminhos();
 
-    void cadastrarCidade(const std::string& nome);
+    bool cadastrarCidade(const std::string& nome);
     void cadastrarTrajeto(const std::string& nomeOrigem, const std::string& nomeDestino, char tipo, int distancia);
 
-    void cadastrarPassageiro(std::string nome, std::string cpf, Cidade* localAtual);
+    bool cadastrarPassageiro(std::string nome, std::string cpf);
     Passageiro* procuraPassageiro(std::string cpf);
     
     bool existeTrajetoDireto(const std::string& nomeOrigem, const std::string& nomeDestino) const;

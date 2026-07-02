@@ -24,13 +24,14 @@ Cidade* GerenciadorCaminhos::acharCidadePeloNome(const string& nomeAlvo) const {
     return nullptr;
 }
 
-void GerenciadorCaminhos::cadastrarCidade(const string& nome) {
+bool GerenciadorCaminhos::cadastrarCidade(const string& nome) {
     if (acharCidadePeloNome(nome) != nullptr) {
         cout << "------- AVISO -------\n";
         cout << "Ignorado: '" << nome << "' ja possui cadastro ativo.\n";
-        return;
+        return false;
     }
     cadastroCidades.push_back(new Cidade(nome));
+    return true;
 }
 
 void GerenciadorCaminhos::cadastrarTrajeto(const string& nomeOrigem, const string& nomeDestino, char tipo, int distancia) {
@@ -128,11 +129,12 @@ Passageiro* GerenciadorCaminhos::procuraPassageiro(std::string cpf){
     return nullptr;
 }
 
-void GerenciadorCaminhos::cadastrarPassageiro(std::string nome,  std::string cpf, Cidade* localAtual){
+bool GerenciadorCaminhos::cadastrarPassageiro(std::string nome,  std::string cpf){
     if(procuraPassageiro(cpf) == nullptr){
-        passageirosCadastrados.push_back(new Passageiro(nome,cpf, localAtual));
+        passageirosCadastrados.push_back(new Passageiro(nome,cpf, nullptr));
+        return true;
     }
-        return;
+        return false;
 }
 
 const vector<Cidade*>& GerenciadorCaminhos::getCidades() const { 
