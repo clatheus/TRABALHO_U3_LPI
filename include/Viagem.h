@@ -39,7 +39,7 @@ public:
     int getHorasEmTransito() const;
     void setHorasEmTransito(int horas);
     void setEmAndamento(bool status);
-    void setDistanciaPercorrida(bool status);
+    void setDistanciaPercorrida(int status);
     int getDistanciaPercorrida() const;
     int getDistanciaTotal() const;
 };
