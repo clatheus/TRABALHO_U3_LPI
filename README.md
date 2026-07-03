@@ -21,17 +21,28 @@ Banco de Dados em CSV: Exportação e importação completa do estado atual da s
 Interface Qt GUI: Telas dinâmicas, caixas de diálogo e formulários validados.
 
 # Author(s)
-Kevin Tietz Loughney
-(Turma 02)(20250027064)
+┌─[ Kevin Tietz Loughney ]────────────────┐
+│ (Turma 02)                              │
+│ (20250027064)                           │
+│ penfootbinario@gmail.com                │
+└─────────────────────────────────────────┘
 
-Lyan Kelvin Benicio Silva
-(Turma 01)(20250031871)
+┌─[ Lyan Kelvin Benicio Silva ]───────────┐
+│ (Turma 01)                              │
+│ (20250031871)                           │
+└─────────────────────────────────────────┘
 
-Matheus Lucheze Lopes
-(Turma 01)(20250034149)
+┌─[ Matheus Lucheze Lopes ]───────────────┐
+│ (Turma 01)                              │
+│ (20250034149)                           │
+│ matheus.lucheze.125@ufrn.edu.br         │
+└─────────────────────────────────────────┘
 
-Rafaela Thais de Abreu Lucio Maia
-(Turma 01)(20250025927)
+┌─[ Rafaela Thais de Abreu Lucio Maia ]───┐
+│ (Turma 01)                              │
+│ (20250025927)                           │
+│ rafaelathaisabreu28@gmail.com           │
+└─────────────────────────────────────────┘
 
 # Compiling and Running
 ...
