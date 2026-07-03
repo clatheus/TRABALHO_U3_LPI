@@ -22,6 +22,8 @@ qt_add_executable(TRABALHO_U3_LPI
     src/Trajetos.cpp
     include/Transporte.h
     src/Transporte.cpp
+    src/Viagem.cpp
+    include/Viagem.h
 )
 
 target_link_libraries(TRABALHO_U3_LPI
