@@ -25,15 +25,16 @@ protected:
 public:
     virtual ~GerenciadorCaminhos();
 
-    bool cadastrarTransporte(std::string nome, char tipo, int capacidade, int velocidade, int distancia_entre_descansos, int tempo_de_descanso, std::string localAtual);
+    int getVisitasCidades(const std::string& nomeCidade) const;
+    bool cadastrarTransporte(std::string nome, char tipo, int capacidade, int velocidade, int distancia_entre_descansos, int tempo_de_descanso, string nomeCidade);
     bool cadastrarCidade(const std::string& nome);
     bool cadastrarTrajeto(const std::string& nomeOrigem, const std::string& nomeDestino, char tipo, int distancia);
 
-    bool cadastrarPassageiro(std::string nome, std::string cpf);
+    bool cadastrarPassageiro(std::string nome, std::string cpf, string nomeCidade);
     Passageiro* procuraPassageiro(std::string cpf);
     
     bool existeTrajetoDireto(const std::string& nomeOrigem, const std::string& nomeDestino) const;
-    
+    Transporte* procuraTransporte(string nome);
     
     std::vector<Trajeto*> buscarMelhorCaminho(const std::string& nomeOrigem, const std::string& nomeDestino) const;
 
@@ -45,7 +46,7 @@ public:
     const std::vector<Viagem*>& getViagens() const;
 
     //vaigens
-    void iniciarViagem(std::string nomeTransporte, std::vector<std::string> nomesPassageiros, std::string nomeOrigem, std::string nomeDestino);
+    bool iniciarViagem(std::string nomeTransporte, std::vector<std::string> nomesPassageiros, std::string nomeOrigem, std::string nomeDestino);
     void avancarHoras(int horas);
     void relatarEstado();
 

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 #include <set>
 #include <map>
 #include <climits>
@@ -134,20 +135,29 @@ Passageiro* GerenciadorCaminhos::procuraPassageiro(string cpf) {
     return nullptr;
 }
 
-bool GerenciadorCaminhos::cadastrarPassageiro(std::string nome,  std::string cpf){
-    if(procuraPassageiro(cpf) == nullptr){
-        passageirosCadastrados.push_back(new Passageiro(nome,cpf, nullptr));
-        return true;
-    }
+bool GerenciadorCaminhos::cadastrarPassageiro(std::string nome,  std::string cpf, string nomeCidade){
+    if(procuraPassageiro(cpf) != nullptr){
         return false;
+    }
+    Cidade* cid = nullptr;
+    // se não estiver em trânsito busca o objeto da cidade
+    if (nomeCidade != "EM_TRANSITO") {
+        cid = acharCidadePeloNome(nomeCidade);
+        if(cid == nullptr){
+            return false; // cidade digitada inválida
+        }
+    }
+
+    passageirosCadastrados.push_back(new Passageiro(nome, cpf, cid));
+    return true;
 }
 
-const vector<Cidade*>& GerenciadorCaminhos::getCidades() const { 
-    return cadastroCidades; 
+const vector<Cidade*>& GerenciadorCaminhos::getCidades() const {
+    return cadastroCidades;
 }
 
-const vector<Trajeto*>& GerenciadorCaminhos::getTrajetos() const { 
-    return rotasDisponiveis; 
+const vector<Trajeto*>& GerenciadorCaminhos::getTrajetos() const {
+    return rotasDisponiveis;
 }
 
 const vector<Passageiro*>& GerenciadorCaminhos::getPassageiros() const {
@@ -155,29 +165,42 @@ const vector<Passageiro*>& GerenciadorCaminhos::getPassageiros() const {
 }
 
 
-bool GerenciadorCaminhos::cadastrarTransporte(string nome, char tipo, int capacidade, int velocidade, int distDescanso, int tempoDescanso, string localAtual) {
-    Cidade* cidade = acharCidadePeloNome(localAtual);
-    if(cidade != nullptr){
-        transportes.push_back(new Transporte(nome, tipo, capacidade, velocidade, distDescanso, tempoDescanso, cidade));
-        return true;
+bool GerenciadorCaminhos::cadastrarTransporte(string nome, char tipo, int capacidade, int velocidade, int distDescanso, int tempoDescanso, string nomeCidade) {
+    if(procuraTransporte(nome) != nullptr){
+        return false;
     }
-    return false;
-    
+    Cidade* cid = nullptr;
+    if (nomeCidade != "EM_TRANSITO") {
+        cid = acharCidadePeloNome(nomeCidade);
+        if(cid == nullptr){
+            return false;
+        }
+    }
+    transportes.push_back(new Transporte(nome, tipo, capacidade, velocidade, distDescanso, tempoDescanso, cid));
+    return true;
 }
 
+Transporte* GerenciadorCaminhos::procuraTransporte(string nome) {
+    for (Transporte* t : transportes) { //procura transporte existente
+        if (t->getNome() == nome) {
+            return t;
+        }
+    }
+    return nullptr;
+}
 
-void GerenciadorCaminhos::iniciarViagem(string nomeTransporte, vector<string> nomesPassageiros, string nomeOrigem, string nomeDestino) {
+bool GerenciadorCaminhos::iniciarViagem(string nomeTransporte, vector<string> nomesPassageiros, string nomeOrigem, string nomeDestino) {
     Transporte* t = nullptr;
     for (Transporte* trans : transportes) {
         if (trans->getNome() == nomeTransporte) { t = trans; break; }
     }
 
-    if (!t) { cout << "Erro: Transporte nao encontrado.\n"; return; }
+    if (!t) { cout << "Erro: Transporte nao encontrado.\n"; return false; }
     Cidade* orig = acharCidadePeloNome(nomeOrigem);
     Cidade* dest = acharCidadePeloNome(nomeDestino);
-    if (!orig || !dest) { cout << "Erro: Cidades invalidas.\n"; return; }
-    if (t->getLocalAtual() != orig) { cout << "Erro: Transporte nao esta na origem.\n"; return; }
-    if (nomesPassageiros.size() > (size_t)t->getCapacidade()) { cout << "Erro: Capacidade excedida.\n"; return; }
+    if (!orig || !dest) { cout << "Erro: Cidades invalidas.\n"; return false; }
+    if (t->getLocalAtual() != orig) { cout << "Erro: Transporte nao esta na origem.\n"; return false; }
+    if (nomesPassageiros.size() > (size_t)t->getCapacidade()) { cout << "Erro: Capacidade excedida.\n"; return false; }
 
     vector<Passageiro*> passSelecionados;
     for (const auto& nome : nomesPassageiros) {
@@ -187,18 +210,18 @@ void GerenciadorCaminhos::iniciarViagem(string nomeTransporte, vector<string> no
         }
         if (!p || p->getLocalAtual() != orig) {
             cout << "Erro: Passageiro '" << nome << "' invalido ou fora da origem.\n";
-            return;
+            return false;
         }
         passSelecionados.push_back(p);
     }
 
     vector<Trajeto*> rota = buscarMelhorCaminho(nomeOrigem, nomeDestino);
-    if (rota.empty()) { cout << "Erro: Caminho inviavel.\n"; return; }
+    if (rota.empty()) { cout << "Erro: Caminho inviavel.\n"; return false; }
 
     for (Trajeto* tr : rota) {
         if (tr->getTipo() != t->getTipo()) {
             cout << "Erro: Modal de transporte incompativel com o trajeto.\n";
-            return;
+            return false;
         }
     }
 
@@ -220,8 +243,10 @@ void GerenciadorCaminhos::iniciarViagem(string nomeTransporte, vector<string> no
     if (primeiraViagem) {
         primeiraViagem->iniciarViagem();
     }
-}
 
+    return true;
+}
+//----------------------------
 void GerenciadorCaminhos::avancarHoras(int horas) {
     for (int h = 0; h < horas; ++h) {
         set<Transporte*> transportesMovidosNestaHora;
@@ -252,8 +277,8 @@ void GerenciadorCaminhos::relatarEstado() {
                 if (v->isEmAndamento()) {
                     for (Passageiro* vp : v->getPassageiros()) {
                         if (vp->getNome() == p->getNome()) {
-                            cout << "EM TRANSITO (" << v->getOrigem()->getNome() << " -> " 
-                                 << v->getDestino()->getNome() << ") no transporte: " 
+                            cout << "EM TRANSITO (" << v->getOrigem()->getNome() << " -> "
+                                 << v->getDestino()->getNome() << ") no transporte: "
                                  << v->getTransporte()->getNome() << "\n";
                         }
                     }
@@ -304,23 +329,25 @@ const vector<Viagem*>& GerenciadorCaminhos::getViagens() const { return viagens;
 
 //SALVAR DADOS
 void GerenciadorCaminhos::salvarDados(const string& prefixo) const {
-    ofstream fCidades(prefixo + "_cidades.csv");
+    string pasta = "data/";
+    std::filesystem::create_directories(pasta);
+    ofstream fCidades(pasta + prefixo + "_cidades.csv");
     for (Cidade* c : cadastroCidades) fCidades << c->getNome() << "\n";
 
-    ofstream fTrajetos(prefixo + "_trajetos.csv");
+    ofstream fTrajetos(pasta + prefixo + "_trajetos.csv");
     for (Trajeto* t : rotasDisponiveis) fTrajetos << t->getOrigem()->getNome() << "," << t->getDestino()->getNome() << "," << t->getTipo() << "," << t->getDistancia() << "\n";
 
-    ofstream fPassageiros(prefixo + "_passageiros.csv");
-    for (Passageiro* p : passageirosCadastrados) fPassageiros << p->getNome() << "," << (p->getLocalAtual() ? p->getLocalAtual()->getNome() : "EM_TRANSITO") << "\n";
+    ofstream fPassageiros(pasta + prefixo + "_passageiros.csv");
+    for (Passageiro* p : passageirosCadastrados) fPassageiros << p->getNome() << "," << p->getCpf() << ","<< (p->getLocalAtual() ? p->getLocalAtual()->getNome() : "EM_TRANSITO") << "\n";
 
-    ofstream fTransportes(prefixo + "_transportes.csv");
+    ofstream fTransportes(pasta + prefixo + "_transportes.csv");
     for (Transporte* t : transportes) fTransportes << t->getNome() << "," << t->getTipo() << "," << t->getCapacidade() << "," << t->getVelocidade() << "," << t->getDistanciaEntreDescansos() << "," << t->getTempoDescanso() << "," << (t->getLocalAtual() ? t->getLocalAtual()->getNome() : "EM_TRANSITO") << "," << t->getTempoDescansoAtual() << "\n";
 
-    ofstream fViagens(prefixo + "_viagens.csv");
+    ofstream fViagens(pasta + prefixo + "_viagens.csv");
     for (size_t i = 0; i < viagens.size(); ++i) {
         Viagem* v = viagens[i];
         fViagens << v->getTransporte()->getNome() << "," << v->getOrigem()->getNome() << "," << v->getDestino()->getNome() << "," << v->getHorasEmTransito() << "," << v->isEmAndamento() << "," << v->getDistanciaPercorrida() << "," << v->getDistanciaTotal() << ",";
-        
+
         int idxProx = -1;
         if (v->getProxima() != nullptr) {
             for (size_t j = 0; j < viagens.size(); ++j) {
@@ -338,11 +365,11 @@ void GerenciadorCaminhos::salvarDados(const string& prefixo) const {
 //CARREGAR DADOS
 void GerenciadorCaminhos::carregarDados(const string& prefixo) {
     string linha;
-
-    ifstream fCidades(prefixo + "_cidades.csv");
+    string pasta = "data/";
+    ifstream fCidades(pasta + prefixo + "_cidades.csv");
     while (getline(fCidades, linha)) { if (!linha.empty()) cadastrarCidade(linha); }
 
-    ifstream fTrajetos(prefixo + "_trajetos.csv");
+    ifstream fTrajetos(pasta + prefixo + "_trajetos.csv");
     while (getline(fTrajetos, linha)) {
         if (linha.empty()) continue;
         stringstream ss(linha);
@@ -351,41 +378,41 @@ void GerenciadorCaminhos::carregarDados(const string& prefixo) {
         cadastrarTrajeto(o, d, t[0], stoi(dist));
     }
 
-    ifstream fPassageiros(prefixo + "_passageiros.csv");
+    ifstream fPassageiros(pasta + prefixo + "_passageiros.csv");
     while (getline(fPassageiros, linha)) {
         if (linha.empty()) continue;
         stringstream ss(linha);
-        string n, cid;
-        getline(ss, n, ','); getline(ss, cid, ',');
-        cadastrarPassageiro(n, cid);
+        string n, cid, cpf;
+        getline(ss, n, ','); getline(ss, cpf, ',');getline(ss, cid, ',');
+        cadastrarPassageiro(n, cpf,cid);
     }
 
-    ifstream fTransportes(prefixo + "_transportes.csv");
+    ifstream fTransportes(pasta + prefixo + "_transportes.csv");
     while (getline(fTransportes, linha)) {
         if (linha.empty()) continue;
         stringstream ss(linha);
-        string n, t, cap, vel, distD, tempD, cid, tempDAt;
+        string n, t, cap, vel, distD, tempD,tempDAt,cid;
         getline(ss, n, ','); getline(ss, t, ','); getline(ss, cap, ','); getline(ss, vel, ',');
-        getline(ss, distD, ','); getline(ss, tempD, ','); getline(ss, cid, ','); getline(ss, tempDAt, ',');
-        
-        cadastrarTransporte(n, t[0], stoi(cap), stoi(vel), stoi(distD), stoi(tempD), cid == "EM_TRANSITO" ? "" : cid);
+        getline(ss, distD, ','); getline(ss, tempD, ',');getline(ss, cid, ','); getline(ss, tempDAt, ',');
+
+        cadastrarTransporte(n, t[0], stoi(cap), stoi(vel), stoi(distD), stoi(tempD),cid);
         for (Transporte* trans : transportes) {
             if (trans->getNome() == n) {
                 trans->setTempoDescansoAtual(stoi(tempDAt));
-                if (cid == "EM_TRANSITO") trans->setLocalAtual(nullptr);
+                //if (cid == "EM_TRANSITO") trans->setLocalAtual(nullptr);
                 break;
             }
         }
     }
 
-    ifstream fViagens(prefixo + "_viagens.csv");
+    ifstream fViagens(pasta + prefixo + "_viagens.csv");
     vector<int> proximosIndices;
 
     while (getline(fViagens, linha)) {
         if (linha.empty()) continue;
         stringstream ss(linha);
         string nT, o, d, hT, emAnd, distP, distT, idxProx, passs;
-        getline(ss, nT, ','); getline(ss, o, ','); getline(ss, d, ','); 
+        getline(ss, nT, ','); getline(ss, o, ','); getline(ss, d, ',');
         getline(ss, hT, ','); getline(ss, emAnd, ','); getline(ss, distP, ',');
         getline(ss, distT, ','); getline(ss, idxProx, ','); getline(ss, passs, ',');
 
@@ -423,4 +450,12 @@ void GerenciadorCaminhos::carregarDados(const string& prefixo) {
             viagens[i]->setProxima(viagens[proximosIndices[i]]);
         }
     }
+}
+
+int GerenciadorCaminhos::getVisitasCidades(const std::string& nomeCidade) const {
+    auto it = visitasCidades.find(nomeCidade);
+    if (it != visitasCidades.end()) {
+        return it->second;
+    }
+    return 0; // Se não foi visitada ainda, o total é 0
 }
