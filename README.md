@@ -32,6 +32,7 @@ Interface Qt GUI: Telas dinâmicas, caixas de diálogo e formulários validados.
 ┌─[ Lyan Kelvin Benicio Silva ]───────────┐
 │ (Turma 01)                              │
 │ (20250031871)                           │
+│ lyankelin94@gmail.com                   │
 └─────────────────────────────────────────┘
 ```
 ```
