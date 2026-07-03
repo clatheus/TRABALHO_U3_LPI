@@ -2,7 +2,7 @@
 
 # -------------- CONTROLADOR DE VIAGENS --------------
 
-Esse projeto consiste no trabalho da unidade 3 da disciplina Linguagem de Programação I. para É um sistema que gerencia o tráfego entre cidades, considerando diferentes tipos de trajeto e meios de transporte. O sistema permite o cadastro de cidades, trajetos, transportes e passageiros, além de calcular e simular viagens entre as cidades.
+Esse é o projeto final da disciplina Linguagem de Programação I. Nosso trabalho consiste em um sistema que gerencia o tráfego entre cidades, considerando diferentes tipos de trajeto e meios de transporte. O sistema permite o cadastro de cidades, trajetos, transportes e passageiros, além de calcular e simular viagens entre as cidades.
 
 # Linguagens
 Nosso código foi feito majoritariamente usando C++, que é o foco da disciplina, mas usamos também a linguagem CMake para automatizar o processo de compilação.
@@ -22,15 +22,16 @@ Interface Qt GUI: Telas dinâmicas, caixas de diálogo e formulários validados.
 
 # Author(s)
 Kevin Tietz Loughney
+(Turma 02)(20250027064)
 
 Lyan Kelvin Benicio Silva
-(Turma 01)
+(Turma 01)(20250031871)
 
 Matheus Lucheze Lopes
-(Turma 01)
+(Turma 01)(20250034149)
 
 Rafaela Thais de Abreu Lucio Maia
-(Turma 01)
+(Turma 01)(20250025927)
 
 # Compiling and Running
 ...
