@@ -22,7 +22,7 @@ void MainWindow::on_pushButton_6_clicked()//botão de sair da janela
 {
     QMessageBox msgBox(this);
     msgBox.setWindowTitle("Sair");
-    msgBox.setText("Você deseja sair do programa?");
+    msgBox.setText("Voce deseja sair do programa?");
     msgBox.setIcon(QMessageBox::Question);
 
     // configura os botões padrão
@@ -30,7 +30,7 @@ void MainWindow::on_pushButton_6_clicked()//botão de sair da janela
 
     //altera o texto
     msgBox.setButtonText(QMessageBox::Yes, "Sim");
-    msgBox.setButtonText(QMessageBox::No, "Não");
+    msgBox.setButtonText(QMessageBox::No, "Nao");
 
     //executa e guarda a resposta
     int resposta = msgBox.exec();
@@ -86,7 +86,7 @@ void MainWindow::atualizarTelas() {
         ui->tabelaTransportes->setItem(linha, 0, new QTableWidgetItem(QString::fromStdString(t->getNome())));
 
         // Coluna 1: Local do Transporte (Cidade atual ou "EM TRÂNSITO")
-        QString local = (t->getLocalAtual() ? QString::fromStdString(t->getLocalAtual()->getNome()) : "EM TRÂNSITO");
+        QString local = (t->getLocalAtual() ? QString::fromStdString(t->getLocalAtual()->getNome()) : "EM TRANSITO");
         ui->tabelaTransportes->setItem(linha, 1, new QTableWidgetItem(local));
     }
 
@@ -111,7 +111,7 @@ void MainWindow::atualizarTelas() {
         ui->tabelaPassageiros->setItem(linha, 1, new QTableWidgetItem(QString::fromStdString(p->getCpf())));
 
         // Coluna 2: Local Atual (Cidade atual ou "EM TRÂNSITO")
-        QString local = (p->getLocalAtual() ? QString::fromStdString(p->getLocalAtual()->getNome()) : "EM TRÂNSITO");
+        QString local = (p->getLocalAtual() ? QString::fromStdString(p->getLocalAtual()->getNome()) : "EM TRANSITO");
         ui->tabelaPassageiros->setItem(linha, 2, new QTableWidgetItem(local));
     }
 
@@ -273,7 +273,7 @@ void MainWindow::on_pushButton_9_clicked()//cadstra cidade
         QMessageBox::information(this, "Sucesso", "Cidade cadastrada!");
         ui->lineEditNomeCidade->clear(); // limpa os campos
     } else {
-        QMessageBox::critical(this, "Erro", "Cidade já está cadastrada!");
+        QMessageBox::critical(this, "Erro", "Cidade ja esta cadastrada!");
     }
 }
 
@@ -294,7 +294,7 @@ void MainWindow::on_pushButton_17_clicked()//cadstra passageiro
         ui->linePassageiroCpf->clear();
         ui->lineCidadePassageiro->clear();
     } else {
-        QMessageBox::critical(this, "Erro", "CPF já existente ou Cidade inválida");
+        QMessageBox::critical(this, "Erro", "CPF ja existente ou Cidade invalida");
     }
 
 }
@@ -322,7 +322,7 @@ void MainWindow::on_pushButton_11_clicked() //cadastra trajeto
         ui->lineDestinoTrajeto->clear();
         ui->lineDistanciaTrajeto->clear();
     } else {
-        QMessageBox::critical(this, "Erro", "Não é possível linkar o trajeto: Origem/Destino não existem ou Distância inválida.");
+        QMessageBox::critical(this, "Erro", "Nao e possivel linkar o trajeto: Origem/Destino nao existem ou Distancia invalida.");
     }
 }
 
@@ -354,7 +354,7 @@ void MainWindow::on_pushButton_14_clicked()//cadastra transporte
     ui->lineDistanciaDescanso->clear();
     ui->lineDescanso->clear();
     } else {
-        QMessageBox::critical(this, "Erro", "Transporte já existe ou Cidade inválida");
+        QMessageBox::critical(this, "Erro", "Transporte ja existe ou Cidade invalida");
     }
 }
 
@@ -394,7 +394,7 @@ void MainWindow::on_pushButton_20_clicked()
     bool sucesso = gerenciador.iniciarViagem(nome, nomesPassageiros, origem, destino);
 
     if(!sucesso){
-        QMessageBox::warning(this, "Erro", "Verifique se os componentes são válidos!");
+        QMessageBox::warning(this, "Erro", "Verifique se os componentes são validos!");
         return;
     }
 

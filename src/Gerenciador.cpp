@@ -48,7 +48,7 @@ bool GerenciadorCaminhos::cadastrarTrajeto(const string& nomeOrigem, const strin
 
     if (origemPt == nullptr || destinoPt == nullptr || distancia<=0) {
         cout << "------- ERRO -------";
-        cout << "Não é possível linkar o trajeto: Origem ou Destino não existem.\n";
+        cout << "Nao e possivel linkar o trajeto: Origem ou Destino nao existem.\n";
         return false;
     }
     rotasDisponiveis.push_back(new Trajeto(origemPt, destinoPt, tipo, distancia));
